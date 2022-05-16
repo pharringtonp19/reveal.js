@@ -3,21 +3,295 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-		<title>reveal.js</title>
-
+		<title>Regularizing the Forward Pass</title>
+		<link rel="stylesheet" href="css/pat.css"> 
 		<link rel="stylesheet" href="dist/reset.css">
 		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
-
-		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="dist/theme/simple.css">
 		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+		<style>
+			.myh2{
+				color:darkblue;
+			}
+
+			.myh3{
+				color:rgb(85, 85, 179);
+			}
+		</style>
 	</head>
-	<body>
+	<body >
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section>  
+					<h2 style="color:darkblue;">Regularizing the Forward Pass</h2>
+					<img style="margin-bottom:0px;margin-top:40px;"src="./img/fwd_pass.jpeg" alt="old school football player throwing a football" width="250px">
+				</section>
+				<section>Styles of Econometrics</section>
+				<section>
+					<h3> Standard Econometrics</h3>
+					<ul>
+						<li> Consider and abstract/simplified version of your estimator</li>
+						<li> Show that it has nice asymptotic properties under a class of well-behaved data generator processes</li>
+						<li> Hope that your estimator performs well on the given sample at hand</li>
+					</ul>
+				</section>
+				<section>
+					<h3> Learning From Data</h3>
+					<ul>
+						<li>What you learn from your data depends on what you believe apriori</li>
+						<li>What do you believe about the data generating prcoess and your algorithm</li>
+						<li>What you believe about the treatment assignment mechanism, attrition, spillover</li>
+					</ul>
+				</section>
+				<section>
+					<section>
+						<h2 style="color:darkblue;">Overview</h2>
+					</section>
+					<section>
+						<h3 style="color:rgb(85, 85, 179);"> The Aim of this Paper</h3>
+						<p style="margin-top:40px;"> Understand the effect of police budgets on opioid-related overdoeses</p>
+					</section>
+					<section>
+						<h3 style="color:rgb(85, 85, 179);"> Challenge</h3>
+						<ul style="margin-top:40px;">
+						<li>Clustered Data </li>
+						<li>Lacking Nonparametric Idenitifcation</li>
+						</ul>	 
+					</section>
+					<section>
+						<h3 style="color:rgb(85, 85, 179);"> Preview of Results</h3>
+						$$\theta \in [\textrm{Maybe}_{-}, \textrm{Maybe}_{+}]$$
+					</section>
+					<section>
+						<h3 style="color:rgb(85, 85, 179);"> Contribution</h3>
+						<div class="clearfix">
+							<div class="img-container">
+							<img src="img/grad_compute.png" alt="Italy" style="width:100%">
+							</div>
+							<div class="img-container">
+							<img src="img/code_contrib.png" alt="Forest" style="width:100%">
+							</div>
+						  </div>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2 style="color:darkblue;">Background</h2>
+					</section>
+					<section>
+						<img src="./img/lin_alg.png" alt="handrawn sketch of "> 
+						<a href="https://github.com/google/jax" class="btn"> Deep Learning</a> 
+					</section>
+					<section>
+						<ul style="list-style: none;">
+							<li> $Y_i$ - Percentange Change in Opioid Deaths</li>
+							<li> $Z_i$ - July 1st Fiscal Year</li>
+							<li> $\xi _i$ - Covid Budget Shock</li>
+							<li> $B_i$ - Budget amended before late May 2020</li>
+
+						</ul>
+						$$\begin{aligned} 
+						Y_i\big(\pi^p(Z_i,\xi _i, B_i), \pi^o(Z_i,\xi _i, B_i), \varepsilon _i\big) \end{aligned}$$
+					</section>
+					<section>
+						<h3 style="color:rgb(85, 85, 179);"> Best Case Scenario</h3>
+						$$\begin{aligned} \mathbb{E}[Y|Z=1] - \mathbb{E}[Y|Z=0]
+						&=  \int Y(1) - Y(0) d\mu  \\ 
+						&= \int Y(\pi(1)) - Y(\underbrace{\pi(0)}_{=0})d\mu \\
+						&= \textrm{Avg Policy Effect}\end{aligned}$$
+					</section>
+				</section>
+				<section> 
+					<section>
+						<h2 style="color:darkblue;">Regularizing the Forward Pass</h2>
+					</section>
+				<section>
+					<p> </p>
+					$$\mathcal{L}(\mathcal{D}_{\textrm{ata}},\mathcal{M}_{\textrm{odel}})= \hat{E}(\mathcal{D}_{\textrm{ata}},\mathcal{M}_{\textrm{odel}}) + \mathcal{R}(\mathcal{M}_{\textrm{odel}}) $$
+				</section>
+				<section>
+					<p> </p>
+					$$\mathcal{L}(\mathcal{D}_{\textrm{ata}},\mathcal{M}_{\textrm{odel}})= \hat{E}(\mathcal{D}_{\textrm{ata}},\mathcal{M}_{\textrm{odel}}) + \mathcal{R}(\mathcal{D}_{\textrm{ata}}, \mathcal{M}_{\textrm{odel}}) $$
+				</section>
+			    </section>
+				<section>
+					<section>
+						<h2 style="color:darkblue;">Generalizing Across Clusters</h2>
+					</section>
+					<section>
+						<h3 style="color:rgb(85, 85, 179);">Challenge: The Tragic Triad</h3>
+						<ul style="margin-top:40px;">
+							<li>
+								Observe only a subset of the clusters
+							</li>
+							<li> 
+								Distribution of covariates can differ across clusters
+							</li>
+							<li>
+								Distribution of outcomes conditional on covariates may differ across clusters
+							</li>
+						</ul>
+					</section>
+					<section>
+						<div class="clearfix">
+							<div class="img-container">
+							<img src="figs/iid_cluster.png" alt="Italy" style="width:100%">
+							</div>
+							<div class="img-container">
+							<img src="figs/nearest_neighbors_increasing_correlation.png" alt="Forest" style="width:100%">
+							</div>
+						  </div>
+						  
+					</section>
+					<section>
+						<div class="clearfix">
+							<div class="img-container">
+								<img src="figs/local_linear_no_const_1.0_18_LM.png" alt="1." style="width:100%">
+							</div>
+							<div class="img-container">
+								<img src="figs/local_linear_no_const_2.0_18_LM.png" alt="2.0" style="width:100%">
+							</div>
+							<div class="img-container">
+								<img src="figs/local_linear_no_const_5.0_18_LM.png" alt="5." style="width:100%">
+							</div>
+							<div class="img-container">
+								<img src="figs/local_linear_no_const_15.0_18_LM.png" alt="15.0" style="width:100%">
+							</div>
+						  </div>
+					</section>
+
+					<section>
+						$$\begin{aligned} \hat{\theta} &\in \underset{\theta}{\textrm{argmin}} \ \mathcal{L}\big(\theta, \lambda ^*(\mathcal{D}_{\textrm{val}},\mathcal{D}_{\textrm{train}}), \mathcal{D}\big) \\
+						\lambda ^*(\mathcal{D}_{\textrm{val}},\mathcal{D}_{\textrm{train}}) &\in \underset{\lambda}{\textrm{argmin}} \ \mathcal{L}\big(\theta ^*(\lambda), \_,  \mathcal{D}_{\textrm{val}}\big) \\
+						\theta^*(\lambda) &\in \underset{\theta}{\textrm{argmin}} \ \mathcal{L}(\theta, \lambda, \mathcal{D}_{\textrm{train}})\end{aligned}$$
+					</section>
+					<section>
+						<div class="clearfix">
+							<div class="img-container">
+							<img src="figs/gradient_descent_motivating_example.png" alt="gd" style="width:100%">
+							</div>
+							<div class="img-container">
+							<img src="figs/gradient_descent_motivating_example_tune.png" alt="gd_tune" style="width:100%">
+							</div>
+						  </div>
+					</section>
+					<section>
+						<ul style="list-style: none;">
+							<li style="margin: 40px 0;"> <b>High Level Idea:</b> Gradient Correction that Favors Early Stopping at the cluster level</li>
+							<li style="margin: 10px 0;"> <b>Note:</b> Bi-level gradient descent with an inner-loop: (approximately)<a href="https://arxiv.org/abs/2007.045040"> Continuous MAML</a>
+								$+$ an integral loss function as the regularizer </li>
+						</ul>
+  					</section>
+					<section>
+					$$\begin{aligned} \mathcal{L}(\theta) &= \sum _i \big(Y_i - \theta^TD_i - \eta _c(\theta)^TC_i\big)^2 \\ 
+					\eta _c(\theta) &= \underset{\eta}{\textrm{argmin}}\sum _{i \in c}\big(Y_i - \theta^TD_i - \eta^TC_i\big)^2\end{aligned}	$$
+					</section>
+					<section>
+						$$\begin{aligned} 
+						\hat{E}(\theta, \mathcal{D}_{\textrm{data}}) &= \sum _i \big(Y_i - f(\eta_c(\theta), X_i, D_i)\big)^2 \\ 
+						\eta _c(\theta) &= \theta + \int -\nabla _{\theta}\hat{E}(\theta _c(t), \mathcal{D}_{\textrm{data},c})dt \\ \\
+						\mathcal{R}(\theta,  \mathcal{D}_{\textrm{data}}) &= \sum _c \int \hat{E}(\theta _c(t), \mathcal{D}_{\textrm{data},c})dt \end{aligned}	$$
+					</section>
+					  <section>
+						<div class="clearfix">
+							<div class="img-container">
+								<img src="figs/grad_desc_toy_0.0.png" alt="0." style="width:100%">
+							</div>
+							<div class="img-container">
+								<img src="figs/grad_desc_toy_1.0.png" alt="1.0" style="width:100%">
+							</div>
+							<div class="img-container">
+								<img src="figs/grad_desc_toy_penalized_params.png" alt="penalized" style="width:100%">
+							</div>
+							<div class="img-container">
+								<img src="figs/grad_desc_toy_0.99.png" alt=".99" style="width:100%">
+							</div>
+						  </div>
+					</section>
+					<section>
+						<h3 style="color:rgb(85, 85, 179);"> Outer Training Loops</h3>
+						<img src="img/two_cluster_exp.png" alt="boot">
+					</section>
+					<section>
+						<h3 style="color:rgb(85, 85, 179);"> Bootstrapped</h3>
+						<img src="img/bootstrapp.png" alt="boot">
+					</section>
+
+					<section>
+						<h3 style="color:rgb(85, 85, 179);"> Larger Model?</h3>
+						<img src="img/dimensionality.png" alt="boot">
+					</section>
+					<section>
+						<h3 style="color:rgb(85, 85, 179);"> Kernel Interpretation</h3>
+						<img src="img/kernel_methods.png" alt="boot">
+					</section>
+
+				</section>
+				<section>
+					<section>
+						<h2  style="color:darkblue;">Partially Linear Model</h2>
+					</section>
+					<section>
+						<div>
+							<span>Note: The feature map, and the regularization strategy are the same as <a href="https://arxiv.org/abs/2007.045040"> Easy to Train Neural ODEs</a></span>
+						</div>
+					</section>
+					<section>
+						<img src="figs/bazzi.png", alt="bazzi">
+					</section>
+					<section>
+						<ul style="list-style: none;">
+							<li style="margin: 40px 0;"> Penalized weight methods prefer (A) sparse solutions in the feature space, 
+								or (B) small parameters in the weight space for the feature map</li>						</ul>
+  					</section>
+					<section>
+						$$\begin{aligned}\textrm{Predict}(\theta, D,X) &= \beta_1^{ols}D+ \beta_2^{ols}\phi _{\theta}(X) \\ 
+						\phi _{\theta}(X) &= X + \int f(t, X(t), \theta)dt \\ X(0) &= X\end{aligned}$$
+					</section>
+					<section>
+						<img src="figs/low_dim.png" alt="ode issues">
+					</section>
+					<section>
+						<img src="figs/learned_lasso.png" alt="ode issues">
+					</section>
+					<section> 
+						$$\mathcal{R}(\mathcal{D}_{\textrm{ata}}, \mathcal{M}_{\textrm{odel}}) = \int \Big|\frac{\partial ^k}{\partial t^k}X(t)\Big|_2^2dt$$
+					</section>
+					<section>
+						<img src="img/ode.png" alt="ode">
+					</section>
+					<section>
+						<img src="img/extending_linear_models.png" alt="ode issues">
+						<p style="font-size: 12px;">Contour plot taken from <a href="https://d2l.ai/"> d2l</a> </p>
+					</section>
+					<section>
+						<img src="img/ode_vc2015.png" alt="not dml">
+						
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2 style="color:darkblue;"> Full Model</h2>
+					</section>
+					<section>
+						<h3> Empirical Loss <span style="font-size: 20px;">$$\hat{E}(\theta, \mathcal{D}_{\textrm{train}})$$ </span></h3>
+						
+					</section>
+					<section>
+						$$\begin{aligned}\hat{E}(\theta, \mathcal{D}_{\textrm{train}}) &= \sum _c \sum _{i \in c} \big(Y_i - f_c(\theta,D_i, X_i)\big)^2 \\
+						f(\theta, D_i, X_i) &= \beta_1 D_i + \beta _2 \phi _{\theta _c}(X_i) \\ 
+						\phi _{\theta _c}(X) &= X + \int f(t, X(t), \theta _c)dt, X(0) = X \\ 
+						\theta _c &= \theta + \int -\nabla \hat{E}(\theta_c(t), D_{\textrm{train},c}), \quad \theta_c(0) = \theta
+						\end{aligned}$$
+					</section>
+				</section>
+				<section>
+
+					<section>  
+					<h2 style="color:darkblue;"> The End </h2>
+					</section>
+				</section>
 			</div>
 		</div>
 
@@ -25,15 +299,11 @@
 		<script src="plugin/notes/notes.js"></script>
 		<script src="plugin/markdown/markdown.js"></script>
 		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/math/math.js"></script>
 		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
 			Reveal.initialize({
 				hash: true,
-
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX ]
 			});
 		</script>
 	</body>
