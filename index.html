@@ -10,6 +10,9 @@
 		<link rel="stylesheet" href="dist/theme/simple.css">
 		<link rel="stylesheet" href="plugin/highlight/monokai.css">
 		<style>
+			.bigFont li{
+				font-size:30px;
+			}
 			.myh2{
 				color:darkblue;
 			}
@@ -17,14 +20,56 @@
 			.myh3{
 				color:rgb(85, 85, 179);
 			}
+			.focus {
+				display: inline-block;
+				background: rgb(229, 227, 227);
+				/* border: 2px dashed blue; */
+				border-radius: 15px;
+				font-size:20px;
+				padding: 10px 20px;
+				margin: 20px;
+				text-decoration: none;
+				box-sizing: border-box;
+			}
+			.elaborate{
+
+			}
 		</style>
 	</head>
 	<body >
 		<div class="reveal">
 			<div class="slides">
-				<section>  
-					<h2 style="color:darkblue;">Regularizing the Forward Pass</h2>
+				<section> 
+					<section> 
+						<h2 style="color:darkblue;">Regularizing the Forward Pass</h2>
+						
+					</section>
+					<section>
+						<ul class="bigFont">
+							<li> Following <a href=# class="elaborate">Mostly Harmless Econometrics</a>, the pillars of our economic analysis are 
+								nonparametric identification and parametric estimation.
+							</li>
+						
+						<span class="focus">Nonparametric Identification $+$  Parametric Estimation $\implies$  Causal Flavor </span>
+						
+							
+							<li>
+								Introduce method that enhances the causal flavor:
+								<ol>
+									<li> 
+										<a href=# class="elaborate">Generalizes OLS</a>
+									</li>
+									<li> <a href=# class="elaborate">Flexibly accounts for the cluster nature of the data</a></li>
+									<li> <a href=# class="elaborate">Inherently compositional</a></li>
+								</ol>
+							</li>
+							<li>
+								We apply our method to $\dots$
+							</li>
+						</ul>
+					</section>
 				</section>
+				
 				<section>
 					$$\begin{aligned} 
 						\text{ols} \ \text{data} &= \textrm{linear\_model} \ \text{data} \\
