@@ -20,6 +20,17 @@
 			.myh3{
 				color:rgb(85, 85, 179);
 			}
+			.motivation {
+				display: inline-block;
+				background: rgb(250, 248, 248);
+				border: 2px dashed blue;
+				border-radius: 15px;
+				font-size:30px;
+				padding: 10px 20px;
+				margin: 20px;
+				text-decoration: none;
+				box-sizing: border-box;
+			}
 			.focus {
 				display: inline-block;
 				background: rgb(229, 227, 227);
@@ -34,6 +45,10 @@
 			.elaborate{
 
 			}
+			.mathSmall{
+				font-size:20px;
+
+}
 		</style>
 	</head>
 	<body >
@@ -41,10 +56,22 @@
 			<div class="slides">
 				<section> 
 					<section> 
-						<h2 style="color:darkblue;">Regularizing the Forward Pass</h2>
+						<h3 style="color:darkblue;">Regularizing the Forward Pass</h3>
 						
 					</section>
 					<section>
+						<p class="motivation"> 
+							It's not often that you come across a paper that might fundmentally changes the way many economists "do" causal inference. We believe, though, that this is one of those papers
+						</p>
+
+					</section>
+				</section>	
+				<section>  
+					<section> 
+						<h3 style="color:darkblue;">The What</h3>
+					</section>
+					<section>
+	
 						<ul class="bigFont">
 							<li> Following <a href=# class="elaborate">Mostly Harmless Econometrics</a>, the pillars of our economic analysis are 
 								nonparametric identification and parametric estimation.
@@ -68,15 +95,36 @@
 							</li>
 						</ul>
 					</section>
+					<section>
+						<p class="mathSmall"> $$\begin{aligned} 
+							\text{ols} \ \textcolor{blue}{data} &= \textrm{linearModel} \ \textcolor{blue}{data} \\
+							\text{ols} \ \textcolor{blue}{data} \ \_&= \Big(\textrm{linearModel} \circ \$ \ \textrm{identityMap} \ \textcolor{blue}{data} \circ \$ \ \textrm{identityMap} \ \textcolor{blue}{data}\Big) \_ \\ 
+							\text{fwd\_pass} \ \textcolor{blue}{data} \ \textcolor{purple}{params}&= \Big(\textrm{linearModel} \circ \$ \ \textrm{featureMap} \ \textcolor{blue}{data} \circ \$ \ \textrm{clusterMap} \ \textcolor{blue}{data}\Big) \ \textcolor{purple}{params} \\ 
+							\text{fwd\_pass} \ \textcolor{blue}{data} \ \textcolor{purple}{params}&= \Big(\textrm{linearModel} \circ \$ \ \textrm{neuralODE} \ \textcolor{blue}{data} \circ \$ \ \textrm{MAML} \ \textcolor{blue}{data}\Big) \ \textcolor{purple}{params} \\ 
+							\text{reg\_fwd\_pass} \ \textcolor{blue}{data} \ \textcolor{purple}{params}&= \Big(\textrm{linearModel} >=> \$ \  \textrm{regNeuralODE} \ \textcolor{blue}{data} >=> \$ \ \textrm{regMAML} \ \textcolor{blue}{data}\Big) \ \textcolor{purple}{params} \\ 
+						\end{aligned}$$</p>
+					</section>
+					<section>
+						<p class="mathSmall"> $$\begin{aligned} 
+							\text{regNeuralODE} \ \textcolor{blue}{x} \ \textcolor{purple}{\theta} &:= x + \int f(t, x(t), \theta)dt, \quad \int \Big\| \frac{\partial ^k}{dt^k}f(t, x(t), \theta) \Big\|dt \\ 
+							& \text{where} \quad x(0)=x \\ \\ 
+							\text{regMAML} \ \textcolor{blue}{data} \ \textcolor{purple}{\theta} &:= \Big(\text{Update}_m \circ \text{Update}_{m-1} \dots \circ \text{Update}_1 \Big) \ \textcolor{purple}{\theta}, \quad \mathcal{L}_c(\textcolor{blue}{data}, \textcolor{purple}{\theta})  \\ 
+							& \text{where} \quad  \text{Update}_t \  \theta = \theta - \alpha_t \nabla \mathcal{L}_c(\textcolor{blue}{data}, \textcolor{purple}{\theta})
+						\end{aligned}$$</p>
+					</section>
 				</section>
-				
 				<section>
-					$$\begin{aligned} 
-						\text{ols} \ \text{data} &= \textrm{linear\_model} \ \text{data} \\
-						&= \textrm{linear\_model} \circ \text{Identity} \  \text{data} \\
-						\text{kernel\_md}  \ \text{data} &= \textrm{linear\_model} \circ \text{feature\_map} \  \text{data}
-					\end{aligned}$$
+					<section> 
+						<h3 style="color:darkblue;">The Why</h3>
+					</section>
 				</section>
+
+				<section>
+					<section> 
+						<h3 style="color:darkblue;">Application</h3>
+					</section>
+				</section>
+
 				<section>
 					$$\begin{aligned} 
 						\text{ols} \ \text{data} &= \textrm{linear\_model} \ \text{data} \\
